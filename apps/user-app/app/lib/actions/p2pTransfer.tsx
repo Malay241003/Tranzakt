@@ -23,11 +23,14 @@ export async function p2pTransfer(to: string, amount: number) {
         }
     }
     await prisma.$transaction(async (tx) => {
+      // this will lock the row.
+      //Prevents race conditions (two transfers at the same time draining the same account).
         await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(from)} FOR UPDATE`;
 
         const fromBalance = await tx.balance.findUnique({
             where: { userId: Number(from) },
           });
+          
           if (!fromBalance || fromBalance.amount < amount) {
             throw new Error('Insufficient funds');
           }

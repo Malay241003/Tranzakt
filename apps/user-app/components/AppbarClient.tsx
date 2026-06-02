@@ -2,11 +2,20 @@
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Appbar } from "@repo/ui/appbar";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+
+// The auth pages have their own branding + "Sign up here / Sign in here"
+// links, so the global top bar is hidden there.
+const HIDE_APPBAR_ON = ["/signin", "/signup"];
 
 export function AppbarClient() {
   const session = useSession();
   const router = useRouter();
+  const pathname = usePathname();
+
+  if (HIDE_APPBAR_ON.includes(pathname)) {
+    return null;
+  }
 
   const handleSignIn = () => {
     signIn();

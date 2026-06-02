@@ -18,9 +18,11 @@ export const Appbar = ({
             TranZakt
         </div>
         <div className="flex items-center gap-4">
-            <div className="text-lg text-slate-1000">
-                Welcome {user?.name}
-            </div>
+            {user?.name && (
+                <div className="text-lg text-slate-1000">
+                    Welcome, {user.name}
+                </div>
+            )}
             <div className="flex flex-col justify-center pt-2">
                 <Button onClick={user ? onSignout : onSignin}>{user ? "Log out" : "Log in"}</Button>
             </div>

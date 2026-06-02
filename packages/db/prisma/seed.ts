@@ -51,7 +51,24 @@ async function main() {
       },
     },
   })
-  console.log({ alice, bob })
+  // P2P demo recipient: lets visitors send a test payment without creating
+  // a second account. Only ever receives money.
+  const demo = await prisma.user.upsert({
+    where: { number: '9876543210' },
+    update: {},
+    create: {
+      number: '9876543210',
+      password: await bcrypt.hash('demo', 10),
+      name: 'TranZakt Demo',
+      Balance: {
+        create: {
+            amount: 0,
+            locked: 0
+        }
+      },
+    },
+  })
+  console.log({ alice, bob, demo })
 }
 main()
   .then(async () => {

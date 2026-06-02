@@ -16,15 +16,15 @@ const SUPPORTED_BANKS = [{
 }];
 
 export const AddMoney = () => {
-    const [redirectUrl, setRedirectUrl] = useState(SUPPORTED_BANKS[0]?.redirectUrl);
     const [provider, setProvider] = useState(SUPPORTED_BANKS[0]?.name || "");
     const [amount, setAmount] = useState("");
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     return (
     <Card title="Add Money">
         <div className="w-full">
-            <TextInput label={"Amount"} placeholder={"Amount"} 
+            <TextInput label={"Amount"} placeholder={"Amount"}
                 onChange={(val) => {
                         setAmount(val);
                 }} value={amount}
@@ -32,8 +32,7 @@ export const AddMoney = () => {
             <div className="py-4 text-left">
                 Bank
             </div>
-            <Select onSelect={(val) => { 
-                setRedirectUrl(SUPPORTED_BANKS.find(x => x.name === val)?.redirectUrl || "");
+            <Select onSelect={(val) => {
                 setProvider(SUPPORTED_BANKS.find(x => x.name === val)?.name || "");
             }} options={SUPPORTED_BANKS.map(x => ({
                 key: x.name,
@@ -42,12 +41,18 @@ export const AddMoney = () => {
             <div className="flex justify-center pt-4">
                 <Button onClick={async () => {
                     const numAmount = Number(amount);
-                    await createOnRampTransaction(provider, numAmount); 
-                    window.location.href = redirectUrl || "";
-                    // Correct: Call router.refresh() to revalidate data
+                    if (!numAmount || numAmount <= 0) {
+                        return;
+                    }
+                    setLoading(true);
+                    // Demo on-ramp: credits the wallet immediately (no real bank
+                    // redirect). Then refresh so the new balance/transaction show.
+                    await createOnRampTransaction(provider, numAmount);
+                    setAmount("");
+                    setLoading(false);
                     router.refresh();
                 }}>
-                    Add Money
+                    {loading ? "Adding..." : "Add Money"}
                 </Button>
             </div>
         </div>

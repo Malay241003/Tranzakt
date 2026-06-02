@@ -56,11 +56,13 @@ export async function signupAndSignIn(
             },
         });
         
-                // Add initial balance entry for the new user
+                // Add initial balance entry for the new user.
+        // ₹1000 signup bonus. Balances are stored in paise (1 INR = 100 paise),
+        // so ₹1000 = 100000.
         await db.balance.create({
             data: {
                 userId: newUser.id,
-                amount: 0,
+                amount: 100000,
                 locked: 0,
             },
         });

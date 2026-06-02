@@ -1,0 +1,32 @@
+# Render Blueprint for TranZakt.
+# Deploys ONLY the Next.js user-app as a single free web service.
+# The bank-webhook service is intentionally NOT deployed: "Add Money" now
+# credits the wallet directly (see createOnrampTransaction.ts).
+#
+# Use your own existing PostgreSQL (Neon/Supabase/etc.) and provide its URL
+# as the DATABASE_URL env var when Render prompts you.
+services:
+  - type: web
+    name: tranzakt
+    runtime: node
+    plan: free
+    region: singapore # closest free region to India; change if you like
+    healthCheckPath: /api/health
+    buildCommand: >-
+      npm install &&
+      npx prisma generate --schema packages/db/prisma/schema.prisma &&
+      npx prisma migrate deploy --schema packages/db/prisma/schema.prisma &&
+      npx turbo build --filter=docs
+    startCommand: npm run start --workspace=docs
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      # Secrets — Render will prompt you for these when you create the blueprint.
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      # Set this to your live URL after the first deploy, e.g.
+      # https://tranzakt.onrender.com  (no trailing slash)
+      - key: NEXTAUTH_URL
+        sync: false

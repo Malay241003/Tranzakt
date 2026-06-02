@@ -1,6 +1,19 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
+  "globalEnv": [
+    "DATABASE_URL",
+    "JWT_SECRET",
+    "NEXTAUTH_URL",
+    "SELF_PING_URL",
+    "DISABLE_SELF_PING",
+    "NEXT_PUBLIC_DEMO_RECIPIENT",
+    "RENDER_EXTERNAL_URL",
+    "HDFC_WEBHOOK_SECRET",
+    "NEXT_RUNTIME",
+    "NODE_ENV",
+    "PORT"
+  ],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
