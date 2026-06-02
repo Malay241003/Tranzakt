@@ -30,3 +30,7 @@ services:
       # https://tranzakt.onrender.com  (no trailing slash)
       - key: NEXTAUTH_URL
         sync: false
+      # Public P2P demo recipient number shown on the P2P page. Not a secret;
+      # baked in at build time (NEXT_PUBLIC_*), so changing it requires a rebuild.
+      - key: NEXT_PUBLIC_DEMO_RECIPIENT
+        value: "9876543210"
